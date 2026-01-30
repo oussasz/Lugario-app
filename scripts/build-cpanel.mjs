@@ -44,7 +44,12 @@ const main = async () => {
   if (await exists(messagesDir)) {
     await copyDir(messagesDir, path.join(outputDir, "messages"));
 
-    const serverMessagesDir = path.join(outputDir, ".next", "server", "messages");
+    const serverMessagesDir = path.join(
+      outputDir,
+      ".next",
+      "server",
+      "messages",
+    );
     await mkdir(serverMessagesDir, { recursive: true });
     await copyDir(messagesDir, serverMessagesDir);
   }
