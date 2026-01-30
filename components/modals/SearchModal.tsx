@@ -11,7 +11,7 @@ import Modal from "./Modal";
 import Button from "../Button";
 import Heading from "../Heading";
 import Counter from "../inputs/Counter";
-import CountrySelect from "../inputs/CountrySelect";
+import AlgeriaLocationSelect from "../inputs/AlgeriaLocationSelect";
 
 const Calendar = dynamic(() => import("@/components/Calender"), { ssr: false });
 
@@ -38,6 +38,8 @@ const SearchModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
   const { handleSubmit, setValue, watch, getValues } = useForm<FieldValues>({
     defaultValues: {
       location: null,
+      wilayaCode: "",
+      municipality: "",
       guestCount: 1,
       bathroomCount: 1,
       roomCount: 1,
@@ -50,6 +52,8 @@ const SearchModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
   });
 
   const location = watch("location");
+  const wilayaCode = watch("wilayaCode");
+  const municipality = watch("municipality");
   const dateRange = watch("dateRange");
   const country = location?.label;
 
@@ -90,6 +94,8 @@ const SearchModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
     const updatedQuery: any = {
       ...currentQuery,
       country: location?.label,
+      region: location?.region,
+      municipality: municipality || undefined,
       guestCount,
       roomCount,
       bathroomCount,
@@ -163,7 +169,11 @@ const SearchModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
               title={t("locationTitle")}
               subtitle={t("locationSubtitle")}
             />
-            <CountrySelect value={location} onChange={setCustomValue} />
+            <AlgeriaLocationSelect
+              wilayaCode={wilayaCode}
+              municipality={municipality}
+              onChange={setCustomValue}
+            />
             <div className="h-[240px]">
               <Map center={location?.latlng} />
             </div>

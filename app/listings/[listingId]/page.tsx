@@ -7,7 +7,6 @@ import ListingClient from "./_components/ListingClient";
 
 import { getCurrentUser } from "@/services/user";
 import { getListingById } from "@/services/listing";
-import { purposeCategories } from "@/utils/constants";
 
 interface IParams {
   listingId: string;
@@ -38,10 +37,6 @@ const ListingPage = async ({ params: { listingId } }: { params: IParams }) => {
     features,
   } = listing;
 
-  const category = purposeCategories.find(
-    (cate) => cate.label === listing.category,
-  );
-
   return (
     <section className="main-container">
       <div className="flex flex-col gap-6">
@@ -63,7 +58,7 @@ const ListingPage = async ({ params: { listingId } }: { params: IParams }) => {
       >
         <ListingInfo
           user={owner}
-          category={category}
+          categoryLabel={listing.category}
           duration={duration}
           features={features}
           description={description}

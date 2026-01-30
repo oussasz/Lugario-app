@@ -17,6 +17,8 @@ const Search = () => {
   const searchParams = useSearchParams();
 
   const country = searchParams?.get("country");
+  const region = searchParams?.get("region");
+  const municipality = searchParams?.get("municipality");
 
   const startDate = searchParams?.get("startDate");
   const endDate = searchParams?.get("endDate");
@@ -51,7 +53,7 @@ const Search = () => {
         >
           <div className="flex flex-row justify-between items-center">
             <small className="text-sm font-bold px-6 text-[#585858]">
-              {country ? country : t("anywhere")}
+              {municipality || region || country || t("anywhere")}
             </small>
 
             <small className="hidden sm:block text-sm font-bold px-6 border-x-[1px] flex-1 text-center text-[#585858]">

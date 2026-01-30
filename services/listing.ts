@@ -13,6 +13,8 @@ export const getListings = async (query?: {
       guestCount,
       bathroomCount,
       country,
+      region,
+      municipality,
       startDate,
       endDate,
       category,
@@ -70,6 +72,14 @@ export const getListings = async (query?: {
 
     if (country) {
       where.country = country;
+    }
+
+    if (region) {
+      where.region = region;
+    }
+
+    if (municipality) {
+      where.municipality = municipality;
     }
 
     if (startDate && endDate) {

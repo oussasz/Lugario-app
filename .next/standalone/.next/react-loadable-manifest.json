@@ -40,9 +40,9 @@
     ]
   },
   "components/navbar/Search.tsx -> @/components/modals/SearchModal": {
-    "id": 19801,
+    "id": 46378,
     "files": [
-      "static/chunks/801.865f213e9603a3e2.js"
+      "static/chunks/378.811aea520e2f76c5.js"
     ]
   }
 }

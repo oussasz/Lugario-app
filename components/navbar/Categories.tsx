@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Scrollbar } from "swiper/modules";
+import { Autoplay, FreeMode, Scrollbar } from "swiper/modules";
 import throttle from "lodash.throttle";
 import "swiper/css";
 import "swiper/css/scrollbar";
@@ -24,7 +24,9 @@ const Categories = () => {
   const tFeature = useTranslations("FeatureOptions");
 
   const [isActive, setIsActive] = useState(false);
+  const [shouldAutoplay, setShouldAutoplay] = useState(false);
   const swiperRef = useRef<SwiperType | null>(null);
+  const touchOpenedRef = useRef(false);
   const params = useSearchParams();
   const pathname = usePathname();
   const selectedPurposes = params?.getAll("category") ?? [];
@@ -48,6 +50,15 @@ const Categories = () => {
     return () => window.removeEventListener("scroll", throttledHandleScroll);
   }, []);
 
+  useEffect(() => {
+    // Only autoplay the ribbon on desktop and when motion is not reduced.
+    const prefersReduced = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    )?.matches;
+    const isDesktop = window.matchMedia?.("(min-width: 768px)")?.matches;
+    setShouldAutoplay(Boolean(isDesktop && !prefersReduced));
+  }, []);
+
   if (!isMainPage) {
     return null;
   }
@@ -60,35 +71,64 @@ const Categories = () => {
     >
       <Swiper
         slidesPerView="auto"
+        freeMode={{
+          enabled: true,
+          momentum: true,
+          momentumRatio: 0.85,
+          momentumBounce: true,
+        }}
+        resistanceRatio={0.6}
+        threshold={5}
+        passiveListeners
+        touchStartPreventDefault={false}
+        touchReleaseOnEdges
         // NOTE: We intentionally avoid `loop` because it makes the scrollbar progress
         // jitter/oscillate (loop duplicates slides). We use `rewind` to get a clean
         // beginning/end feel while still cycling.
         rewind
-        speed={9000}
-        autoplay={{
-          delay: 0,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: false,
-        }}
+        speed={shouldAutoplay ? 9000 : 250}
+        autoplay={
+          shouldAutoplay
+            ? {
+                delay: 0,
+                disableOnInteraction: true,
+                pauseOnMouseEnter: true,
+              }
+            : false
+        }
         scrollbar={{
           draggable: true,
           hide: false,
         }}
-        modules={[Autoplay, Scrollbar]}
+        modules={[Autoplay, FreeMode, Scrollbar]}
         pagination={{
           clickable: true,
         }}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
 
-          const resume = () => swiper.autoplay?.resume?.();
-          swiper.on("touchStart", resume);
-          swiper.on("touchEnd", resume);
-          swiper.on("sliderMove", resume);
-          swiper.on("scrollbarDragMove", resume);
-          swiper.on("scrollbarDragEnd", resume);
+          if (!shouldAutoplay) return;
+
+          const stop = () => swiper.autoplay?.stop?.();
+          const start = () => swiper.autoplay?.start?.();
+
+          swiper.on("touchStart", () => {
+            touchOpenedRef.current = true;
+            stop();
+          });
+
+          swiper.on("touchEnd", () => {
+            touchOpenedRef.current = false;
+            // restart after a short pause so the swipe feels responsive
+            window.setTimeout(() => {
+              if (!touchOpenedRef.current) start();
+            }, 600);
+          });
+
+          swiper.on("scrollbarDragStart", stop);
+          swiper.on("scrollbarDragEnd", () => window.setTimeout(start, 300));
         }}
-        className="categories-ribbon-swiper main-container mt-2 lg:!px-3 !px-2 pb-6"
+        className="categories-ribbon-swiper main-container mt-2 lg:!px-3 !px-2 pb-6 touch-pan-x select-none"
       >
         <SwiperSlide className="max-w-fit" key="group-duration">
           <div className="px-3 py-2 text-xs font-semibold text-neutral-500 select-none">

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const Logo = () => {
   return (
-    <Link href="/" className="hidden md:block">
+    <Link href="/" className="block shrink-0">
       <Image
         src="/images/logo.png"
         alt="logo"
@@ -12,7 +12,7 @@ const Logo = () => {
         height={40}
         priority
         unoptimized
-        style={{ width: "auto", height: "35px" }}
+        className="w-auto h-[28px] md:h-[35px]"
       />
     </Link>
   );

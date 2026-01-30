@@ -18,7 +18,7 @@ function getLocaleFromRequest(request: NextRequest): Locale {
     const preferredLocales = acceptLanguage
       .split(",")
       .map((lang) => lang.split(";")[0].trim().split("-")[0]);
-    
+
     for (const lang of preferredLocales) {
       if (locales.includes(lang as Locale)) {
         return lang as Locale;
@@ -54,10 +54,10 @@ export default async function middleware(
   event: NextFetchEvent,
 ) {
   const locale = getLocaleFromRequest(request);
-  
+
   // Create response (just pass through, no rewriting)
   let response = NextResponse.next();
-  
+
   // Set the locale cookie if not already set
   if (!request.cookies.has(LOCALE_COOKIE)) {
     response.cookies.set(LOCALE_COOKIE, locale, {

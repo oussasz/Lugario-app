@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import React, { useLayoutEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 
 const Loading = () => {
   useLayoutEffect(() => {
-    if(typeof window === undefined) return;
-    window.scrollTo(0,0);
-  }, [])
+    if (typeof window === "undefined") return;
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="main-container">

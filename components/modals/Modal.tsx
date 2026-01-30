@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -67,10 +68,27 @@ const Modal: FC<ModalProps> & {
 
 const Trigger: FC<TriggerProps> = ({ children, name }) => {
   const { open } = useContext(ModalContext);
-  const onClick = (e: MouseEvent | TouchEvent) => {
+
+  const ignoreNextClickRef = useRef(false);
+
+  const onClick: React.MouseEventHandler<HTMLElement> = (e) => {
+    // On many mobile browsers a touch will also fire a click shortly after.
+    // Guard against double-triggering.
+    if (ignoreNextClickRef.current) return;
+    children.props?.onClick?.(e);
     open(name);
   };
-  return cloneElement(children, { onClick });
+
+  const onTouchEnd: React.TouchEventHandler<HTMLElement> = (e) => {
+    ignoreNextClickRef.current = true;
+    window.setTimeout(() => {
+      ignoreNextClickRef.current = false;
+    }, 350);
+    children.props?.onTouchEnd?.(e);
+    open(name);
+  };
+
+  return cloneElement(children, { onClick, onTouchEnd });
 };
 
 const Window: FC<WindowProps> = ({ children, name }) => {

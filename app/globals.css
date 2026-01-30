@@ -41,12 +41,9 @@ body {
   @apply max-w-[1140px] 2xl:max-w-[1200px] mx-auto xl:px-0 px-4;
 }
 
-.swiper-wrapper {
-  @apply md:gap-2 gap-1 justify-between;
-}
-
 /* Smooth continuous category ribbon */
 .categories-ribbon-swiper .swiper-wrapper {
+  @apply md:gap-2 gap-1 justify-start;
   transition-timing-function: linear !important;
 }
 

@@ -6,8 +6,11 @@ import { useTranslations } from "next-intl";
 
 import Avatar from "@/components/Avatar";
 import ListingCategory from "./ListingCategory";
-import { Category } from "@/types";
-import { durationCategories, featureCategories } from "@/utils/constants";
+import {
+  durationCategories,
+  featureCategories,
+  purposeCategories,
+} from "@/utils/constants";
 
 interface ListingInfoProps {
   user: {
@@ -18,7 +21,7 @@ interface ListingInfoProps {
   guestCount: number;
   roomCount: number;
   bathroomCount: number;
-  category: Category | undefined;
+  categoryLabel?: string | null;
   duration?: string | null;
   features?: string | null;
   latitude: number | null;
@@ -35,7 +38,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   guestCount,
   roomCount,
   bathroomCount,
-  category,
+  categoryLabel,
   duration,
   features,
   latitude,
@@ -55,6 +58,11 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   // Get duration info
   const durationInfo = duration
     ? durationCategories.find((d) => d.label === duration)
+    : null;
+
+  // Get purpose/category info (lookup on client to avoid passing functions across RSC boundary)
+  const categoryInfo = categoryLabel
+    ? purposeCategories.find((c) => c.label === categoryLabel)
     : null;
 
   return (
@@ -89,17 +97,19 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
       )}
 
       {/* Purpose/Category */}
-      {category && (
+      {categoryInfo && (
         <>
           <ListingCategory
-            icon={category.icon}
+            icon={categoryInfo.icon}
             label={
-              category.id ? tPurpose(`${category.id}.label`) : category.label
+              categoryInfo.id
+                ? tPurpose(`${categoryInfo.id}.label`)
+                : categoryInfo.label
             }
             description={
-              category.id
-                ? tPurpose(`${category.id}.description`)
-                : category.description || ""
+              categoryInfo.id
+                ? tPurpose(`${categoryInfo.id}.description`)
+                : categoryInfo.description || ""
             }
           />
           <hr />
