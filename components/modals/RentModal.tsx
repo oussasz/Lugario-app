@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState, useTransition } from "react";
+import React, { useEffect, useMemo, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -22,7 +22,7 @@ import {
   purposeCategories,
   featureCategories,
 } from "@/utils/constants";
-import { createListing } from "@/services/listing";
+import { createListing, updateListing } from "@/services/listing";
 
 const steps: { [key: string]: string } = {
   "0": "duration",
@@ -46,7 +46,21 @@ enum STEPS {
   PRICE = 7,
 }
 
-const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
+type RentModalMode = "create" | "edit";
+
+type RentModalProps = {
+  onCloseModal?: () => void;
+  mode?: RentModalMode;
+  listingId?: string;
+  initialValues?: FieldValues;
+};
+
+const RentModal = ({
+  onCloseModal,
+  mode = "create",
+  listingId,
+  initialValues,
+}: RentModalProps) => {
   const tRent = useTranslations("Rent");
   const tCommon = useTranslations("Common");
   const tDuration = useTranslations("DurationOptions");
@@ -83,6 +97,27 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
       description: "",
     },
   });
+
+  useEffect(() => {
+    if (mode !== "edit" || !initialValues) return;
+    reset({
+      duration: "",
+      category: "",
+      features: [] as string[],
+      location: null,
+      wilayaCode: "",
+      municipality: "",
+      address: "",
+      guestCount: 1,
+      bathroomCount: 1,
+      roomCount: 1,
+      image: "",
+      price: "",
+      title: "",
+      description: "",
+      ...initialValues,
+    });
+  }, [initialValues, mode, reset]);
 
   const location = watch("location");
   const features = watch("features") || [];
@@ -126,18 +161,28 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
 
     startTransition(async () => {
       try {
-        const newListing = await createListing(data);
-        toast.success(tRent("createdSuccess", { title: data.title }));
+        if (mode === "edit") {
+          if (!listingId) throw new Error("Missing listingId");
+          await updateListing(listingId, data);
+          toast.success(tRent("updatedSuccess", { title: data.title }));
+        } else {
+          const newListing = await createListing(data);
+          toast.success(tRent("createdSuccess", { title: data.title }));
+          router.push(`/listings/${newListing.id}`);
+        }
         queryClient.invalidateQueries({
           queryKey: ["listings"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["properties"],
         });
         reset();
         setStep(STEPS.DURATION);
         onCloseModal?.();
         router.refresh();
-        router.push(`/listings/${newListing.id}`);
+        if (mode === "edit") router.push(`/listings/${listingId}`);
       } catch (error: any) {
-        toast.error(tRent("createFailed"));
+        toast.error(mode === "edit" ? tRent("updateFailed") : tRent("createFailed"));
         console.log(error?.message);
       }
     });
@@ -361,7 +406,9 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <Modal.WindowHeader title={tRent("header")} />
+      <Modal.WindowHeader
+        title={mode === "edit" ? tRent("editHeader") : tRent("header")}
+      />
       <form
         className="flex-1 md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
         onSubmit={handleSubmit(onSubmit)}
@@ -398,7 +445,7 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
               {isLoading ? (
                 <SpinnerMini />
               ) : step === STEPS.PRICE ? (
-                tCommon("create")
+                mode === "edit" ? tCommon("update") : tCommon("create")
               ) : (
                 tCommon("next")
               )}

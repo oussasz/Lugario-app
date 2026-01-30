@@ -13,12 +13,14 @@ const Navbar: React.FC<NavbarProps> = async () => {
   return (
     <header className="fixed top-0 left-0 w-full bg-white z-10 ">
       <nav className="py-3 border-b-[1px]">
-        <div className="main-container flex flex-col gap-3 md:flex-row md:items-center md:gap-0">
-          <div className="flex items-center justify-between gap-3 shrink-0">
+        <div className="flex flex-row flex-wrap md:flex-nowrap main-container justify-between items-center gap-3 md:gap-0">
+          <div className="order-1 shrink-0">
             <Logo />
+          </div>
+          <div className="order-2 md:order-3 shrink-0">
             <UserMenu user={user} />
           </div>
-          <div className="w-full md:w-auto md:flex-1 md:px-6">
+          <div className="order-3 md:order-2 w-full md:flex-1 md:px-6 md:flex md:justify-center">
             <Suspense fallback={<></>}>
               <Search />
             </Suspense>

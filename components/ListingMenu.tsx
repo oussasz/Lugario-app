@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import Menu from "./Menu";
 import Modal from "./modals/Modal";
 import ConfirmDelete from "./ConfirmDelete";
+import EditListingModal from "./modals/EditListingModal";
 
 import { deleteProperty } from "@/services/properties";
 import { deleteReservation } from "@/services/reservation";
@@ -18,12 +19,33 @@ const pathNameDict: { [x: string]: string } = {
   "/reservations": "Cancel guest reservation",
 };
 
+const normalizePathname = (pathname: string) => {
+  if (!pathname) return "";
+  if (pathname === "/") return "/";
+  return pathname.replace(/\/+$/, "");
+};
+
 interface ListingMenuProps {
   id: string;
 }
 
 const ListingMenu: FC<ListingMenuProps> = ({ id }) => {
   const pathname = usePathname();
+  const normalizedPathname = normalizePathname(pathname);
+  const isHome = normalizedPathname === "/";
+  const isFavorites = normalizedPathname.endsWith("/favorites");
+  const isProperties = normalizedPathname.endsWith("/properties");
+  const isTrips = normalizedPathname.endsWith("/trips");
+  const isReservations = normalizedPathname.endsWith("/reservations");
+
+  const deleteLabel = isProperties
+    ? pathNameDict["/properties"]
+    : isTrips
+      ? pathNameDict["/trips"]
+      : isReservations
+        ? pathNameDict["/reservations"]
+        : "";
+
   const { mutate: deleteListing } = useMutation({
     mutationFn: deleteProperty,
   });
@@ -32,19 +54,20 @@ const ListingMenu: FC<ListingMenuProps> = ({ id }) => {
   });
   const [isLoading, startTransition] = useTransition();
 
-  if (pathname === "/" || pathname === "/favorites") return null;
+  if (isHome || isFavorites) return null;
+  if (!isProperties && !isTrips && !isReservations) return null;
 
   const onConfirm = (onModalClose?: () => void) => {
     startTransition(() => {
       try {
-        if (pathname === "/properties") {
+        if (isProperties) {
           deleteListing(id, {
             onSuccess: () => {
               onModalClose?.();
               toast.success("Listing successfully deleted!");
             },
           });
-        } else if (pathname === "/trips" || pathname === "/reservations") {
+        } else if (isTrips || isReservations) {
           cancelReservation(id, {
             onSuccess: () => {
               onModalClose?.();
@@ -54,7 +77,7 @@ const ListingMenu: FC<ListingMenuProps> = ({ id }) => {
         }
       } catch (error) {
         toast.error("Oops! Something went wrong. Please try again later.");
-        onModalClose?.()
+        onModalClose?.();
       }
     });
   };
@@ -74,17 +97,29 @@ const ListingMenu: FC<ListingMenuProps> = ({ id }) => {
           </button>
         </Menu.Toggle>
         <Menu.List position="bottom-left" className="rounded-md">
+          {isProperties ? (
+            <Modal.Trigger name="edit-listing">
+              <Menu.Button className="text-[14px] rounded-md font-semibold py-[10px] hover:bg-neutral-100 transition">
+                Edit property
+              </Menu.Button>
+            </Modal.Trigger>
+          ) : null}
           <Modal.Trigger name="confirm-delete">
             <Menu.Button className="text-[14px] rounded-md font-semibold py-[10px] hover:bg-neutral-100 transition">
-              {pathNameDict[pathname]}
+              {deleteLabel}
             </Menu.Button>
           </Modal.Trigger>
         </Menu.List>
       </Menu>
+      {isProperties ? (
+        <Modal.Window name="edit-listing">
+          <EditListingModal listingId={id} />
+        </Modal.Window>
+      ) : null}
       <Modal.Window name="confirm-delete">
         <ConfirmDelete
           onConfirm={onConfirm}
-          title={pathNameDict[pathname]}
+          title={deleteLabel}
           isLoading={isLoading}
         />
       </Modal.Window>

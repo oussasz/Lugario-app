@@ -1,5 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 import { LISTINGS_BATCH } from "@/utils/constants";
 import { getCurrentUser } from "./user";
 
@@ -219,4 +220,107 @@ export const createListing = async (data: { [x: string]: any }) => {
   });
 
   return listing;
+};
+
+export const getOwnedListingById = async (id: string) => {
+  if (!id || typeof id !== "string") throw new Error("Invalid ID");
+
+  const user = await getCurrentUser();
+  if (!user) throw new Error("Unauthorized!");
+
+  const listing = await db.listing.findUnique({
+    where: {
+      id,
+      userId: user.id,
+    },
+  });
+
+  if (!listing) throw new Error("Listing not found!");
+
+  return listing;
+};
+
+export const updateListing = async (listingId: string, data: { [x: string]: any }) => {
+  if (!listingId || typeof listingId !== "string") throw new Error("Invalid ID");
+
+  const user = await getCurrentUser();
+  if (!user) throw new Error("Unauthorized!");
+
+  const {
+    category,
+    duration,
+    features,
+    location,
+    municipality,
+    address,
+    guestCount,
+    bathroomCount,
+    roomCount,
+    image: imageSrc,
+    price,
+    title,
+    description,
+  } = data;
+
+  // Validate required fields (same as create)
+  const requiredFields = [
+    "category",
+    "duration",
+    "location",
+    "municipality",
+    "address",
+    "guestCount",
+    "roomCount",
+    "bathroomCount",
+    "image",
+    "price",
+    "title",
+    "description",
+  ];
+  for (const field of requiredFields) {
+    if (!data[field]) {
+      throw new Error(`Missing required field: ${field}`);
+    }
+  }
+
+  const region = location?.region;
+  const country = location?.label;
+  const latlng = location?.latlng;
+  if (!region || !country || !Array.isArray(latlng) || latlng.length < 2) {
+    throw new Error("Invalid location");
+  }
+
+  const updated = await db.listing.updateMany({
+    where: {
+      id: listingId,
+      userId: user.id,
+    },
+    data: {
+      title,
+      description,
+      imageSrc,
+      category,
+      duration,
+      features: Array.isArray(features) ? features.join(",") : features || "",
+      roomCount,
+      bathroomCount,
+      guestCount,
+      country,
+      region,
+      municipality,
+      address,
+      latitude: latlng[0],
+      longitude: latlng[1],
+      price: parseInt(price, 10),
+    },
+  });
+
+  if (!updated.count) throw new Error("Listing not found!");
+
+  revalidatePath("/");
+  revalidatePath("/properties");
+  revalidatePath("/favorites");
+  revalidatePath(`/listings/${listingId}`);
+
+  return { id: listingId };
 };
