@@ -5,7 +5,8 @@ export const runtime = "nodejs";
 const handler = async () =>
   NextResponse.json(
     {
-      error: "EdgeStore has been removed. Use POST /api/upload for local uploads.",
+      error:
+        "EdgeStore has been removed. Use POST /api/upload for local uploads.",
     },
     { status: 410 },
   );

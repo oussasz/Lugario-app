@@ -73,7 +73,7 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    []
+    [],
   );
 
   const setCustomValue = (id: string, value: any) => {
@@ -109,7 +109,7 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
         router.push(`/listings/${newListing.id}`);
       } catch (error: any) {
         toast.error("Failed to create listing!");
-        console.log(error?.message)
+        console.log(error?.message);
       }
     });
   };
@@ -239,13 +239,13 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
             />
             <div className="flex-1 grid grid-cols-2  gap-3 max-h-[60vh] lg:max-h-[260px] overflow-y-scroll scroll-smooth">
               {categories.map((item) => (
-                  <CategoryButton
-                    onClick={setCustomValue}
-                    watch={watch}
-                    label={item.label}
-                    icon={item.icon}
-                    key={item.label}
-                  />
+                <CategoryButton
+                  onClick={setCustomValue}
+                  watch={watch}
+                  label={item.label}
+                  icon={item.icon}
+                  key={item.label}
+                />
               ))}
             </div>
           </div>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
@@ -56,7 +56,13 @@ function MapMarker({ position }: { position: L.LatLngExpression }) {
 }
 
 /** Fly to new center when it changes */
-function ChangeView({ center, zoom }: { center: L.LatLngExpression; zoom: number }) {
+function ChangeView({
+  center,
+  zoom,
+}: {
+  center: L.LatLngExpression;
+  zoom: number;
+}) {
   const map = useMap();
   useEffect(() => {
     if (map) {
@@ -67,7 +73,9 @@ function ChangeView({ center, zoom }: { center: L.LatLngExpression; zoom: number
 }
 
 const Map: React.FC<MapProps> = ({ center }) => {
-  const mapCenter: L.LatLngExpression = (center as L.LatLngExpression) || [52, -0.09];
+  const mapCenter: L.LatLngExpression = (center as L.LatLngExpression) || [
+    52, -0.09,
+  ];
   const zoom = center ? 4 : 2;
 
   return (

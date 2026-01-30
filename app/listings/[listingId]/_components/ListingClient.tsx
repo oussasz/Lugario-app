@@ -65,7 +65,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
     if (dateRange.startDate && dateRange.endDate) {
       const dayCount = differenceInCalendarDays(
         dateRange.endDate,
-        dateRange.startDate
+        dateRange.startDate,
       );
 
       if (dayCount && price) {
@@ -106,7 +106,8 @@ const ListingClient: React.FC<ListingClientProps> = ({
               Under Construction
             </h2>
             <p className="text-gray-600 mb-6">
-              The payment system is currently under development. Please check back later!
+              The payment system is currently under development. Please check
+              back later!
             </p>
             <button
               onClick={() => setShowUnderConstruction(false)}

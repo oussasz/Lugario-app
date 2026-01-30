@@ -54,7 +54,7 @@ const SearchModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    []
+    [],
   );
 
   const setCustomValue = (id: string, value: any) => {
@@ -104,7 +104,7 @@ const SearchModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
         url: "/",
         query: updatedQuery,
       },
-      { skipNull: true }
+      { skipNull: true },
     );
     onCloseModal?.();
     router.push(url);

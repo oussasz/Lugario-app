@@ -51,7 +51,6 @@ Make sure you have the following software installed on your system:
   ```
 
 - Set up the environment variables:
-
   1.  Create a `.env.local` file in the root directory.
 
   2.  Add the following variables to the .env file, replacing the placeholder values with your own:

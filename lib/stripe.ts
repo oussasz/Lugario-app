@@ -1,4 +1,4 @@
-import Stripe from 'stripe'
+import Stripe from "stripe";
 
 const stripeApiKey = process.env.STRIPE_API_KEY;
 

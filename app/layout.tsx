@@ -8,8 +8,7 @@ import Providers from "@/components/Provider";
 
 export const metadata: Metadata = {
   title: "Lugario",
-  description:
-    "Lugario — Discover stays, plan trips, and manage reservations.",
+  description: "Lugario — Discover stays, plan trips, and manage reservations.",
 };
 
 export default function RootLayout({
@@ -25,7 +24,8 @@ export default function RootLayout({
           <main className="pb-16 md:pt-28 pt-24">{children}</main>
         </Providers>
       </body>
-      {process.env.NODE_ENV === "production" && process.env.GA_MEASUREMENT_ID ? (
+      {process.env.NODE_ENV === "production" &&
+      process.env.GA_MEASUREMENT_ID ? (
         <GoogleAnalytics gaId={process.env.GA_MEASUREMENT_ID} />
       ) : null}
     </html>

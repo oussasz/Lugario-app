@@ -41,10 +41,15 @@ export async function POST(req: Request) {
     }
 
     if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Only image uploads are allowed" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Only image uploads are allowed" },
+        { status: 400 },
+      );
     }
 
-    const folder = sanitizeFolder(typeof folderRaw === "string" ? folderRaw : "products");
+    const folder = sanitizeFolder(
+      typeof folderRaw === "string" ? folderRaw : "products",
+    );
     const uploadDir = path.join(UPLOADS_BASE_DIR, folder);
     await mkdir(uploadDir, { recursive: true });
 
@@ -58,13 +63,18 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     await writeFile(absolutePath, new Uint8Array(bytes));
 
-    await safeUnlinkIfLocalUpload(typeof replacePath === "string" ? replacePath : null);
+    await safeUnlinkIfLocalUpload(
+      typeof replacePath === "string" ? replacePath : null,
+    );
 
     const publicPath = `${UPLOADS_BASE_URL}/${folder}/${filename}`;
     return NextResponse.json({ path: publicPath }, { status: 200 });
   } catch (err) {
     return NextResponse.json(
-      { error: "Upload failed", details: err instanceof Error ? err.message : String(err) },
+      {
+        error: "Upload failed",
+        details: err instanceof Error ? err.message : String(err),
+      },
       { status: 500 },
     );
   }
