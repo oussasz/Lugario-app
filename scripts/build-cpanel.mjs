@@ -52,6 +52,10 @@ const main = async () => {
     );
     await mkdir(serverMessagesDir, { recursive: true });
     await copyDir(messagesDir, serverMessagesDir);
+
+    const serverChunksDir = path.join(outputDir, ".next", "server", "chunks");
+    await mkdir(serverChunksDir, { recursive: true });
+    await copyDir(messagesDir, serverChunksDir);
   }
 
   // Copy prisma schema for migrations/inspection if needed
