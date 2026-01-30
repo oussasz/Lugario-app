@@ -11,7 +11,12 @@ process.chdir(__dirname);
 const fs = require("fs");
 const path = require("path");
 
-const standaloneServer = path.join(__dirname, ".next", "standalone", "server.js");
+const standaloneServer = path.join(
+  __dirname,
+  ".next",
+  "standalone",
+  "server.js",
+);
 
 if (fs.existsSync(standaloneServer)) {
   // In standalone builds, Next provides its own server entry.
