@@ -4,6 +4,13 @@ import crypto from "crypto";
 import { mkdir, writeFile, unlink } from "fs/promises";
 import { existsSync } from "fs";
 
+import {
+  deleteCloudinaryImage,
+  hasCloudinaryConfig,
+  tryParseCloudinaryPublicIdFromUrl,
+  uploadImageBufferToCloudinary,
+} from "@/lib/cloudinary";
+
 export const runtime = "nodejs";
 
 const UPLOADS_BASE_URL = "/uploads";
@@ -28,6 +35,24 @@ function safeUnlinkIfLocalUpload(replacePath: string | null) {
   return unlink(absolute).catch(() => undefined);
 }
 
+async function safeDeleteIfCloudinaryUrl(replacePath: string | null) {
+  if (!replacePath) return;
+  if (!hasCloudinaryConfig()) return;
+
+  // Only attempt deletion for Cloudinary URLs.
+  if (
+    !replacePath.startsWith("http://") &&
+    !replacePath.startsWith("https://")
+  ) {
+    return;
+  }
+
+  const publicId = tryParseCloudinaryPublicIdFromUrl(replacePath);
+  if (!publicId) return;
+
+  await deleteCloudinaryImage(publicId).catch(() => undefined);
+}
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -50,6 +75,33 @@ export async function POST(req: Request) {
     const folder = sanitizeFolder(
       typeof folderRaw === "string" ? folderRaw : "products",
     );
+
+    const replacePathString =
+      typeof replacePath === "string" ? replacePath : null;
+
+    // Prefer Cloudinary when configured (cPanel-friendly; no filesystem writes).
+    if (hasCloudinaryConfig()) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      const uploaded = await uploadImageBufferToCloudinary({
+        buffer,
+        folder,
+      });
+
+      // Best-effort cleanup: if the previous image is local OR a Cloudinary URL.
+      await Promise.all([
+        safeUnlinkIfLocalUpload(replacePathString),
+        safeDeleteIfCloudinaryUrl(replacePathString),
+      ]);
+
+      return NextResponse.json(
+        { path: uploaded.secureUrl, publicId: uploaded.publicId },
+        { status: 200 },
+      );
+    }
+
+    // Fallback to local uploads when Cloudinary is not configured.
     const uploadDir = path.join(UPLOADS_BASE_DIR, folder);
     await mkdir(uploadDir, { recursive: true });
 
@@ -63,9 +115,7 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     await writeFile(absolutePath, new Uint8Array(bytes));
 
-    await safeUnlinkIfLocalUpload(
-      typeof replacePath === "string" ? replacePath : null,
-    );
+    await safeUnlinkIfLocalUpload(replacePathString);
 
     const publicPath = `${UPLOADS_BASE_URL}/${folder}/${filename}`;
     return NextResponse.json({ path: publicPath }, { status: 200 });

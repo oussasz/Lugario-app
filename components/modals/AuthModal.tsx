@@ -1,6 +1,5 @@
 "use client";
 import React, { useTransition, useState, useEffect } from "react";
-import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
@@ -170,14 +169,6 @@ const AuthModal = ({
         >
           <FcGoogle className="w-6 h-6" />
           <span className="text-[14px]">{tAuth("continueWithGoogle")}</span>
-        </Button>
-        <Button
-          outline
-          onClick={() => signIn("github")}
-          className="flex flex-row justify-center gap-2 items-center px-3 py-2"
-        >
-          <AiFillGithub className="w-6 h-6" />
-          <span className="text-[14px]">{tAuth("continueWithGithub")}</span>
         </Button>
         <div
           className="

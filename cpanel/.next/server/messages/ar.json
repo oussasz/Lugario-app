@@ -186,6 +186,9 @@
   },
   "Listing": {
     "night": "ليلة",
+    "week": "أسبوع",
+    "month": "شهر",
+    "longTerm": "طويل الأمد",
     "reserve": "احجز",
     "total": "الإجمالي",
     "loginToReserve": "يرجى تسجيل الدخول لحجز هذا المكان."
@@ -212,7 +215,6 @@
     "password": "كلمة المرور",
     "continue": "متابعة",
     "continueWithGoogle": "المتابعة عبر Google",
-    "continueWithGithub": "المتابعة عبر GitHub",
     "alreadyHaveAccount": "لديك حساب بالفعل؟",
     "firstTime": "أول مرة في لوغاريو؟",
     "createAnAccount": "إنشاء حساب",

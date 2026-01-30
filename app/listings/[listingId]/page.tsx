@@ -52,6 +52,7 @@ const ListingPage = async ({ params: { listingId } }: { params: IParams }) => {
       <ListingClient
         id={id}
         price={price}
+        duration={duration}
         reservations={reservations}
         user={currentUser}
         title={title}

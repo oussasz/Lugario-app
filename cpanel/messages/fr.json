@@ -186,6 +186,9 @@
   },
   "Listing": {
     "night": "nuit",
+    "week": "semaine",
+    "month": "mois",
+    "longTerm": "long terme",
     "reserve": "Réserver",
     "total": "Total",
     "loginToReserve": "Veuillez vous connecter pour réserver cette annonce."
@@ -212,7 +215,6 @@
     "password": "Mot de passe",
     "continue": "Continuer",
     "continueWithGoogle": "Continuer avec Google",
-    "continueWithGithub": "Continuer avec GitHub",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "firstTime": "Première fois sur Lugario ?",
     "createAnAccount": "Créer un compte",

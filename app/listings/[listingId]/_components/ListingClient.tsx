@@ -29,6 +29,7 @@ interface ListingClientProps {
   id: string;
   title: string;
   price: number;
+  duration?: string | null;
   user:
     | (User & {
         id: string;
@@ -38,6 +39,7 @@ interface ListingClientProps {
 
 const ListingClient: React.FC<ListingClientProps> = ({
   price,
+  duration,
   reservations = [],
   children,
   user,
@@ -92,6 +94,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
       <div className="order-first mb-10 md:order-last md:col-span-3">
         <ListingReservation
           price={price}
+          duration={duration}
           totalPrice={totalPrice}
           onChangeDate={(name, value) => setDateRange(value)}
           dateRange={dateRange}

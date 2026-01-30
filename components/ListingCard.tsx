@@ -47,6 +47,22 @@ const ListingCard: React.FC<ListingCardProps> = ({
     return match ? tPurpose(`${match.id}.label`) : data.category;
   })();
 
+  // Map duration to translation key
+  const getDurationLabel = () => {
+    switch (data.duration) {
+      case "byNight":
+        return tListing("night");
+      case "perWeek":
+        return tListing("week");
+      case "perMonth":
+        return tListing("month");
+      case "longTerm":
+        return tListing("longTerm");
+      default:
+        return tListing("night");
+    }
+  };
+
   return (
     <div className="relative">
       <div className="absolute top-0 left-0 p-3 flex items-center justify-between w-full">
@@ -88,7 +104,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
               DZD {formatPrice(price, locale)}
             </span>
             {!reservation && (
-              <span className="font-light">{tListing("night")}</span>
+              <span className="font-light">{getDurationLabel()}</span>
             )}
           </div>
         </div>
