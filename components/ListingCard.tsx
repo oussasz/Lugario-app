@@ -85,7 +85,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
           <div className="flex flex-row items-baseline gap-1">
             <span className="font-bold text-[#444] text-[14px]">
-              $ {formatPrice(price, locale)}
+              DZD {formatPrice(price, locale)}
             </span>
             {!reservation && (
               <span className="font-light">{tListing("night")}</span>

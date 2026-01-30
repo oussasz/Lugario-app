@@ -39,7 +39,7 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
     <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
       <div className="flex flex-row items-center gap-1 p-4">
         <span className="text-lg font-semibold">
-          $ {formatPrice(price, locale)}
+          DZD {formatPrice(price, locale)}
         </span>
         <span className="font-light text-neutral-600">{t("night")}</span>
       </div>
@@ -63,7 +63,7 @@ const ListingReservation: React.FC<ListingReservationProps> = ({
       <hr />
       <div className="p-4 flex flex-row items-center justify-between font-semibold text-lg">
         <span>{t("total")}</span>
-        <span>$ {formatPrice(totalPrice, locale)}</span>
+        <span>DZD {formatPrice(totalPrice, locale)}</span>
       </div>
     </div>
   );
