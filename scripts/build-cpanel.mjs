@@ -6,6 +6,7 @@ const outputDir = path.join(root, "cpanel");
 const standaloneDir = path.join(root, ".next", "standalone");
 const staticDir = path.join(root, ".next", "static");
 const publicDir = path.join(root, "public");
+const messagesDir = path.join(root, "messages");
 
 const exists = async (p) => {
   try {
@@ -38,6 +39,10 @@ const main = async () => {
 
   if (await exists(publicDir)) {
     await copyDir(publicDir, path.join(outputDir, "public"));
+  }
+
+  if (await exists(messagesDir)) {
+    await copyDir(messagesDir, path.join(outputDir, "messages"));
   }
 
   // Copy prisma schema for migrations/inspection if needed
