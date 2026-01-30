@@ -4,10 +4,7 @@ import dynamic from "next/dynamic";
 import Avatar from "@/components/Avatar";
 import ListingCategory from "./ListingCategory";
 import { Category } from "@/types";
-import {
-  durationCategories,
-  featureCategories,
-} from "@/utils/constants";
+import { durationCategories, featureCategories } from "@/utils/constants";
 
 interface ListingInfoProps {
   user: {

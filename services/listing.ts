@@ -140,7 +140,18 @@ export const createListing = async (data: { [x: string]: any }) => {
   } = data;
 
   // Validate required fields
-  const requiredFields = ['category', 'duration', 'location', 'guestCount', 'roomCount', 'bathroomCount', 'image', 'price', 'title', 'description'];
+  const requiredFields = [
+    "category",
+    "duration",
+    "location",
+    "guestCount",
+    "roomCount",
+    "bathroomCount",
+    "image",
+    "price",
+    "title",
+    "description",
+  ];
   for (const field of requiredFields) {
     if (!data[field]) {
       throw new Error(`Missing required field: ${field}`);
@@ -157,7 +168,7 @@ export const createListing = async (data: { [x: string]: any }) => {
       imageSrc,
       category,
       duration,
-      features: Array.isArray(features) ? features.join(',') : (features || ''),
+      features: Array.isArray(features) ? features.join(",") : features || "",
       roomCount,
       bathroomCount,
       guestCount,

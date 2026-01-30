@@ -38,7 +38,9 @@ const ListingPage = async ({ params: { listingId } }: { params: IParams }) => {
     features,
   } = listing;
 
-  const category = purposeCategories.find((cate) => cate.label === listing.category);
+  const category = purposeCategories.find(
+    (cate) => cate.label === listing.category,
+  );
 
   return (
     <section className="main-container">
