@@ -16,6 +16,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   errors: FieldErrors;
   watch: UseFormWatch<FieldValues>;
   autoFocus?: boolean;
+  className?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -28,6 +29,7 @@ const Input: React.FC<InputProps> = ({
   autoFocus = false,
   type = "text",
   disabled,
+  className,
   ...props
 }) => {
   const value = watch(id);
@@ -45,7 +47,8 @@ const Input: React.FC<InputProps> = ({
           errors[id]
             ? "border-rose-500 focus:border-rose-500"
             : "border-neutral-300 focus:border-black",
-          Icon ? "pl-9" : "pl-4"
+          Icon ? "pl-9" : "pl-4",
+          className
         )}
         autoFocus={autoFocus}
         {...props}

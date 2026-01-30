@@ -5,8 +5,6 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { BiDollar } from "react-icons/bi";
-
 import Modal from "./Modal";
 import Button from "../Button";
 import SpinnerMini from "../Loader";
@@ -317,19 +315,24 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
               title="Now, set your price"
               subtitle="How much do you charge?"
             />
-            <Input
-              key="price"
-              id="price"
-              label="Price (DZD)"
-              icon={BiDollar}
-              type="number"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-              watch={watch}
-              autoFocus
-            />
+            <div className="relative">
+              <span className="absolute top-[13px] left-3 text-[15px] font-medium text-neutral-600 z-10">
+                DA
+              </span>
+              <Input
+                key="price"
+                id="price"
+                label="Price (DZD)"
+                type="number"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                watch={watch}
+                autoFocus
+                className="pl-10"
+              />
+            </div>
           </div>
         );
 
