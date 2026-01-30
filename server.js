@@ -5,6 +5,9 @@
  * to listen on process.env.PORT.
  */
 
+// Ensure Next.js resolves `.next`, `public/`, etc from the app root.
+process.chdir(__dirname);
+
 const http = require("http");
 const next = require("next");
 
