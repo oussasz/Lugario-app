@@ -1,0 +1,8 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^cd \"/home/oussasz/Project/Dz Dari/lugario\" && npx prisma studio 2>&1 &$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

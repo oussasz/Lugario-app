@@ -9,16 +9,16 @@ export const getFavorites = async () => {
     const user = await getCurrentUser();
 
     if (!user) return [];
-    const data = await db.user.findUnique({
+    const favorites = await db.favorite.findMany({
       where: {
-        id: user.id,
+        userId: user.id,
       },
       select: {
-        favoriteIds: true,
+        listingId: true,
       },
     });
 
-    return data?.favoriteIds ?? [];
+    return favorites.map((fav) => fav.listingId);
   } catch (error) {
     return [];
   }
@@ -36,36 +36,40 @@ export const updateFavorite = async ({
       throw new Error("Invalid ID");
     }
 
-    const favorites = await getFavorites();
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
       throw new Error("Please sign in to favorite the listing!");
     }
 
-    let newFavorites;
     let hasFavorited;
 
     if (!favorite) {
-      newFavorites = favorites.filter((id) => id !== listingId);
+      // Remove from favorites
+      await db.favorite.deleteMany({
+        where: {
+          userId: currentUser.id,
+          listingId: listingId,
+        },
+      });
       hasFavorited = false;
     } else {
-      if (favorites.includes(listingId)) {
-        newFavorites = [...favorites];
-      } else {
-        newFavorites = [listingId, ...favorites];
-      }
+      // Add to favorites (upsert to avoid duplicates)
+      await db.favorite.upsert({
+        where: {
+          userId_listingId: {
+            userId: currentUser.id,
+            listingId: listingId,
+          },
+        },
+        create: {
+          userId: currentUser.id,
+          listingId: listingId,
+        },
+        update: {},
+      });
       hasFavorited = true;
     }
-
-    await db.user.update({
-      where: {
-        id: currentUser.id,
-      },
-      data: {
-        favoriteIds: newFavorites,
-      },
-    });
 
     revalidatePath("/");
     revalidatePath(`/listings/${listingId}`);
@@ -81,11 +85,15 @@ export const updateFavorite = async ({
 
 export const getFavoriteListings = async () => {
   try {
-    const favoriteIds = await getFavorites();
+    const currentUser = await getCurrentUser();
+    if (!currentUser) return [];
+
     const favorites = await db.listing.findMany({
       where: {
-        id: {
-          in: [...(favoriteIds || [])],
+        favoritedBy: {
+          some: {
+            userId: currentUser.id,
+          },
         },
       },
     });

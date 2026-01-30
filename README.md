@@ -16,7 +16,7 @@ You can check out a live demo of the Airbnb clone project [here](https://airbnb-
 
 ## Screenshots
 
-<kbd><img width="944" alt="vacationhub" src="https://github.com/sudeepmahato16/airbnb_clone/assets/122378993/f893e203-8a2d-4ff1-ae20-67e64187b770"></kbd>
+<kbd><img width="944" alt="lugario" src="https://github.com/sudeepmahato16/airbnb_clone/assets/122378993/f893e203-8a2d-4ff1-ae20-67e64187b770"></kbd>
 
 <kbd><img width="886" alt="login-modal" src="https://github.com/sudeepmahato16/airbnb_clone/assets/122378993/3d6675e0-6046-48dc-b55f-7ef318581ccd"></kbd>
 
@@ -63,8 +63,7 @@ Make sure you have the following software installed on your system:
       GOOGLE_CLIENT_ID=<your-google-client-id>
       GOOGLE_CLIENT_SECRET=<your-google-client-secret>
       NEXTAUTH_SECRET=<your-nextauth-secret>
-      EDGE_STORE_ACCESS_KEY=<your-edge-store-access-key>
-      EDGE_STORE_SECRET_KEY=<your-edge-store-secret-key>
+      # Uploads are stored locally under /public/uploads
       ```
 
   ```

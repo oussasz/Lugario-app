@@ -1,9 +1,12 @@
 "use client";
 
-import { type EdgeStoreRouter } from "@/app/api/edgestore/[...edgestore]/route";
-import { createEdgeStoreProvider } from "@edgestore/react";
+import React from "react";
 
-const { EdgeStoreProvider, useEdgeStore } =
-  createEdgeStoreProvider<EdgeStoreRouter>();
+// EdgeStore was removed in favor of local uploads handled by POST /api/upload.
+// This file remains only to avoid breaking older imports.
 
-export { EdgeStoreProvider, useEdgeStore };
+export const EdgeStoreProvider = ({ children }: { children: React.ReactNode }) => children;
+
+export const useEdgeStore = () => {
+  throw new Error("EdgeStore has been removed. Use local uploads via /api/upload.");
+};

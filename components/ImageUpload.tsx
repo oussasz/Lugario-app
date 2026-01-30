@@ -1,9 +1,9 @@
 import React, { ChangeEvent, FC, useState, useTransition } from "react";
 import Image from "next/image";
 import { TbPhotoPlus } from "react-icons/tb";
+import toast from "react-hot-toast";
 
 import SpinnerMini from "./Loader";
-import { useEdgeStore } from "@/lib/edgestore";
 import { cn } from "@/utils/helper";
 
 interface ImageUploadProps {
@@ -15,23 +15,34 @@ const ImageUpload: FC<ImageUploadProps> = ({ onChange, initialImage = "" }) => {
   const [image, setImage] = useState(initialImage);
   const [isLoading, startTransition] = useTransition();
   const [isDragging, setIsDragging] = useState(false);
-  const { edgestore } = useEdgeStore();
 
   const uploadImage = (e: any, file: File) => {
-    if(!file.type.startsWith("image")) return;
+    if (!file.type.startsWith("image")) return;
     setImage(URL.createObjectURL(file));
     startTransition(async () => {
-      const res = await edgestore.publicFiles.upload({
-        file,
-        options: {
-          replaceTargetUrl: initialImage,
-        },
-      });
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("folder", "products");
+        if (initialImage) formData.append("replacePath", initialImage);
 
-      onChange("image", res.url);
-      setTimeout(() => {
-        e.target.form?.requestSubmit();
-      }, 1000);
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json().catch(() => null);
+        if (!response.ok || !data?.path) {
+          throw new Error(data?.error || "Upload failed");
+        }
+
+        onChange("image", data.path);
+        setTimeout(() => {
+          e.target.form?.requestSubmit();
+        }, 1000);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Upload failed");
+      }
     });
   };
 

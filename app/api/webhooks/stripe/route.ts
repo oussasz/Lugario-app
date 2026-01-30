@@ -7,6 +7,13 @@ import { createReservation } from '@/services/reservation'
 
 export async function POST(req: Request) {
   try {
+    if (!stripe) {
+      return NextResponse.json(
+        { message: 'Stripe is not configured', ok: false },
+        { status: 500 }
+      )
+    }
+
     const body = await req.text()
     const signature = headers().get('stripe-signature');
 

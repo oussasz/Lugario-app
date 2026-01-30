@@ -1,16 +1,15 @@
-import { initEdgeStore } from "@edgestore/server";
-import { createEdgeStoreNextHandler } from "@edgestore/server/adapters/next/app";
+import { NextResponse } from "next/server";
 
-const es = initEdgeStore.create();
+export const runtime = "nodejs";
 
-const edgeStoreRouter = es.router({
-  publicFiles: es.fileBucket(),
-});
-
-const handler = createEdgeStoreNextHandler({
-  router: edgeStoreRouter,
-});
+const handler = async () =>
+  NextResponse.json(
+    {
+      error: "EdgeStore has been removed. Use POST /api/upload for local uploads.",
+    },
+    { status: 410 },
+  );
 
 export { handler as GET, handler as POST };
 
-export type EdgeStoreRouter = typeof edgeStoreRouter;
+export type EdgeStoreRouter = never;

@@ -15,7 +15,8 @@ interface ListingInfoProps {
   roomCount: number;
   bathroomCount: number;
   category: Category | undefined;
-  latlng: number[];
+  latitude: number | null;
+  longitude: number | null;
 }
 
 const Map = dynamic(() => import("@/components/Map"), {
@@ -29,7 +30,8 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   roomCount,
   bathroomCount,
   category,
-  latlng,
+  latitude,
+  longitude,
 }) => {
   return (
     <div className="col-span-4 flex flex-col gap-8">
@@ -59,7 +61,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
       <p className=" font-light text-neutral-500 text-[16px] ">{description}</p>
       <hr />
       <div className="h-[210px]">
-        <Map center={latlng} />
+        <Map center={latitude && longitude ? [latitude, longitude] : undefined} />
       </div>
     </div>
   );

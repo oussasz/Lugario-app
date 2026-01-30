@@ -10,10 +10,8 @@ import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
 import { Range } from "react-date-range";
 import { User } from "next-auth";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
 import ListingReservation from "./ListingReservation";
-import { createPaymentSession, createReservation } from "@/services/reservation";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -48,7 +46,8 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const [totalPrice, setTotalPrice] = useState(price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
   const [isLoading, startTransition] = useTransition();
-  const router = useRouter();
+  const [showUnderConstruction, setShowUnderConstruction] = useState(false);
+
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
     reservations.forEach((reservation) => {
@@ -79,23 +78,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
   const onCreateReservation = () => {
     if (!user) return toast.error("Please log in to reserve listing.");
-    startTransition(async () => {
-      try {
-        const { endDate, startDate } = dateRange;
-        const res = await createPaymentSession({
-          listingId: id,
-          endDate,
-          startDate,
-          totalPrice,
-        });
-
-        if(res?.url){
-          router.push(res.url);
-        }
-      } catch (error: any) {
-        toast.error(error?.message);
-      }
-    });
+    setShowUnderConstruction(true);
   };
 
   return (
@@ -113,6 +96,27 @@ const ListingClient: React.FC<ListingClientProps> = ({
           disabledDates={disabledDates}
         />
       </div>
+
+      {/* Under Construction Modal */}
+      {showUnderConstruction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-white rounded-xl p-8 max-w-md mx-4 text-center shadow-xl">
+            <div className="text-6xl mb-4">🚧</div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Under Construction
+            </h2>
+            <p className="text-gray-600 mb-6">
+              The payment system is currently under development. Please check back later!
+            </p>
+            <button
+              onClick={() => setShowUnderConstruction(false)}
+              className="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 px-6 rounded-lg transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

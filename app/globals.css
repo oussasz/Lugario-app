@@ -17,6 +17,8 @@
 }
 
 body {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial, "Apple Color Emoji", "Segoe UI Emoji";
   overflow-x: hidden;
   overflow-y: scroll;
   scroll-behavior: smooth;
