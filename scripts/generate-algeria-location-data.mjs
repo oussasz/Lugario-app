@@ -3,7 +3,11 @@ import path from "node:path";
 
 const ROOT = process.cwd();
 
-const geojsonPath = path.join(ROOT, "Algeria-geojson-master", "all-wilayas.geojson");
+const geojsonPath = path.join(
+  ROOT,
+  "Algeria-geojson-master",
+  "all-wilayas.geojson",
+);
 const citiesCombinedPath = path.join(
   ROOT,
   "algeria-cities-master",
@@ -114,7 +118,8 @@ function main() {
 
   for (const f of geo.features ?? []) {
     const props = f.properties ?? {};
-    const code = props.city_code != null ? String(props.city_code).padStart(2, "0") : "";
+    const code =
+      props.city_code != null ? String(props.city_code).padStart(2, "0") : "";
     const nameFr = props.name ?? "";
     const nameAr = props.name_ar ?? "";
 
@@ -174,8 +179,14 @@ function main() {
 
   ensureDir(outWilayasPath);
   fs.writeFileSync(outWilayasPath, JSON.stringify(wilayas, null, 2));
-  fs.writeFileSync(outCommunesFrPath, JSON.stringify(communesFrByCode, null, 2));
-  fs.writeFileSync(outCommunesArPath, JSON.stringify(communesArByCode, null, 2));
+  fs.writeFileSync(
+    outCommunesFrPath,
+    JSON.stringify(communesFrByCode, null, 2),
+  );
+  fs.writeFileSync(
+    outCommunesArPath,
+    JSON.stringify(communesArByCode, null, 2),
+  );
   fs.writeFileSync(outBoundsPath, JSON.stringify(algeriaBounds, null, 2));
 
   console.log("Generated:");

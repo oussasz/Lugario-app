@@ -62,7 +62,9 @@ body {
 .categories-ribbon-swiper .swiper-scrollbar-drag {
   background: #f43f5e;
   border-radius: 2px;
-  transition: width 120ms ease, transform 120ms ease;
+  transition:
+    width 120ms ease,
+    transform 120ms ease;
 }
 
 .leaflet-bottom,

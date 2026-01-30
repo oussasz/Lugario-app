@@ -56,9 +56,11 @@ const AlgeriaLocationSelect = ({
 
   const communeOptions = useMemo(() => {
     if (!selectedWilaya) return [];
-    const map = (language === "ar"
-      ? (communesAr as Record<string, string[]>)
-      : (communesFr as Record<string, string[]>)) as Record<string, string[]>;
+    const map = (
+      language === "ar"
+        ? (communesAr as Record<string, string[]>)
+        : (communesFr as Record<string, string[]>)
+    ) as Record<string, string[]>;
 
     const items = map[selectedWilaya.code] ?? [];
     return items.map((name) => ({ value: name, label: name }));
@@ -159,7 +161,9 @@ const AlgeriaLocationSelect = ({
           Municipality (Commune)
         </label>
         <Select
-          placeholder={selectedWilaya ? "Select a commune" : "Select wilaya first"}
+          placeholder={
+            selectedWilaya ? "Select a commune" : "Select wilaya first"
+          }
           isDisabled={!selectedWilaya}
           isClearable
           options={communeOptions}
