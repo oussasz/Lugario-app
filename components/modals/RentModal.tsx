@@ -14,7 +14,7 @@ import Heading from "../Heading";
 import Counter from "../inputs/Counter";
 import Input from "../inputs/Input";
 import CategoryButton from "../inputs/CategoryButton";
-import CountrySelect from "../inputs/CountrySelect";
+import AlgeriaLocationSelect from "../inputs/AlgeriaLocationSelect";
 import ImageUpload from "../ImageUpload";
 import FeatureSelect from "../inputs/FeatureSelect";
 
@@ -66,6 +66,9 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
       category: "",
       features: [] as string[],
       location: null,
+      wilayaCode: "",
+      municipality: "",
+      address: "",
       guestCount: 1,
       bathroomCount: 1,
       roomCount: 1,
@@ -78,6 +81,8 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
 
   const location = watch("location");
   const features = watch("features") || [];
+  const wilayaCode = watch("wilayaCode");
+  const municipality = watch("municipality");
 
   const Map = useMemo(
     () =>
@@ -207,7 +212,21 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
               title="Where is your place located?"
               subtitle="Help guests find you!"
             />
-            <CountrySelect value={location} onChange={setCustomValue} />
+            <AlgeriaLocationSelect
+              wilayaCode={wilayaCode}
+              municipality={municipality}
+              onChange={setCustomValue}
+            />
+
+            <Input
+              id="address"
+              label="Address"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              watch={watch}
+            />
             <div className="h-[240px]">
               <Map center={location?.latlng} />
             </div>

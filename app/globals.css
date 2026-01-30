@@ -50,6 +50,21 @@ body {
   transition-timing-function: linear !important;
 }
 
+.categories-ribbon-swiper .swiper-scrollbar {
+  bottom: 0 !important;
+  left: 4px !important;
+  width: calc(100% - 8px) !important;
+  height: 4px !important;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+}
+
+.categories-ribbon-swiper .swiper-scrollbar-drag {
+  background: #f43f5e;
+  border-radius: 2px;
+  transition: width 120ms ease, transform 120ms ease;
+}
+
 .leaflet-bottom,
 .leaflet-control,
 .leaflet-pane,

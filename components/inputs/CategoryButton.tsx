@@ -44,8 +44,8 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
         type="submit"
         onClick={handleChange}
         className={cn(
-          `rounded-xl  border-2 p-2 flex flex-col gap-3  hover:border-black cursor-pointer transition duration-200 w-full`,
-          isSelected ? "border-black" : "border-neutral-200",
+          `rounded-xl  border-2 p-2 flex flex-col gap-3  hover:border-[#fd6d6c] cursor-pointer transition duration-200 w-full`,
+          isSelected ? "border-[#fd6d6c]" : "border-neutral-200",
         )}
         onFocus={handleChange}
       >

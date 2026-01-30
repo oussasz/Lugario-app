@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Scrollbar } from "swiper/modules";
 import throttle from "lodash.throttle";
 import "swiper/css";
+import "swiper/css/scrollbar";
+import type { Swiper as SwiperType } from "swiper";
 
 import CategoryBox from "./CategoryBox";
 import {
@@ -17,6 +19,7 @@ import { Category } from "@/types";
 
 const Categories = () => {
   const [isActive, setIsActive] = useState(false);
+  const swiperRef = useRef<SwiperType | null>(null);
   const params = useSearchParams();
   const pathname = usePathname();
   const selectedPurposes = params?.getAll("category") ?? [];
@@ -52,18 +55,35 @@ const Categories = () => {
     >
       <Swiper
         slidesPerView="auto"
-        loop
-        speed={14000}
+        // NOTE: We intentionally avoid `loop` because it makes the scrollbar progress
+        // jitter/oscillate (loop duplicates slides). We use `rewind` to get a clean
+        // beginning/end feel while still cycling.
+        rewind
+        speed={9000}
         autoplay={{
           delay: 0,
           disableOnInteraction: false,
-          pauseOnMouseEnter: true,
+          pauseOnMouseEnter: false,
         }}
-        modules={[Autoplay]}
+        scrollbar={{
+          draggable: true,
+          hide: false,
+        }}
+        modules={[Autoplay, Scrollbar]}
         pagination={{
           clickable: true,
         }}
-        className="categories-ribbon-swiper main-container mt-2 lg:!px-3 !px-2"
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+
+          const resume = () => swiper.autoplay?.resume?.();
+          swiper.on("touchStart", resume);
+          swiper.on("touchEnd", resume);
+          swiper.on("sliderMove", resume);
+          swiper.on("scrollbarDragMove", resume);
+          swiper.on("scrollbarDragEnd", resume);
+        }}
+        className="categories-ribbon-swiper main-container mt-2 lg:!px-3 !px-2 pb-6"
       >
         <SwiperSlide className="max-w-fit" key="group-duration">
           <div className="px-3 py-2 text-xs font-semibold text-neutral-500 select-none">
