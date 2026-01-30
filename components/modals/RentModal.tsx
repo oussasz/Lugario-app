@@ -16,30 +16,39 @@ import Input from "../inputs/Input";
 import CategoryButton from "../inputs/CategoryButton";
 import CountrySelect from "../inputs/CountrySelect";
 import ImageUpload from "../ImageUpload";
+import FeatureSelect from "../inputs/FeatureSelect";
 
-import { categories } from "@/utils/constants";
+import {
+  durationCategories,
+  purposeCategories,
+  featureCategories,
+} from "@/utils/constants";
 import { createListing } from "@/services/listing";
 
-const steps = {
-  "0": "category",
-  "1": "location",
-  "2": "guestCount",
-  "3": "image",
-  "4": "title",
-  "5": "price",
+const steps: { [key: string]: string } = {
+  "0": "duration",
+  "1": "category",
+  "2": "features",
+  "3": "location",
+  "4": "guestCount",
+  "5": "image",
+  "6": "title",
+  "7": "price",
 };
 
 enum STEPS {
-  CATEGORY = 0,
-  LOCATION = 1,
-  INFO = 2,
-  IMAGES = 3,
-  DESCRIPTION = 4,
-  PRICE = 5,
+  DURATION = 0,
+  PURPOSE = 1,
+  FEATURES = 2,
+  LOCATION = 3,
+  INFO = 4,
+  IMAGES = 5,
+  DESCRIPTION = 6,
+  PRICE = 7,
 }
 
 const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
-  const [step, setStep] = useState(STEPS.CATEGORY);
+  const [step, setStep] = useState(STEPS.DURATION);
   const [isLoading, startTransition] = useTransition();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -53,7 +62,9 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
     getValues,
   } = useForm<FieldValues>({
     defaultValues: {
-      category: "Beach",
+      duration: "",
+      category: "",
+      features: [] as string[],
       location: null,
       guestCount: 1,
       bathroomCount: 1,
@@ -66,7 +77,7 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
   });
 
   const location = watch("location");
-  const country = location?.label;
+  const features = watch("features") || [];
 
   const Map = useMemo(
     () =>
@@ -82,6 +93,14 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
       shouldTouch: true,
       shouldValidate: true,
     });
+  };
+
+  const toggleFeature = (feature: string) => {
+    const currentFeatures = getValues("features") || [];
+    const newFeatures = currentFeatures.includes(feature)
+      ? currentFeatures.filter((f: string) => f !== feature)
+      : [...currentFeatures, feature];
+    setCustomValue("features", newFeatures);
   };
 
   const onBack = () => {
@@ -103,7 +122,7 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
           queryKey: ["listings"],
         });
         reset();
-        setStep(STEPS.CATEGORY);
+        setStep(STEPS.DURATION);
         onCloseModal?.();
         router.refresh();
         router.push(`/listings/${newListing.id}`);
@@ -116,6 +135,71 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
 
   const body = () => {
     switch (step) {
+      case STEPS.DURATION:
+        return (
+          <div className="flex flex-col gap-2">
+            <Heading
+              title="Rental Duration"
+              subtitle="How long can guests rent your place?"
+            />
+            <div className="flex-1 grid grid-cols-2 gap-3 max-h-[60vh] lg:max-h-[260px] overflow-y-scroll scroll-smooth">
+              {durationCategories.map((item) => (
+                <CategoryButton
+                  onClick={setCustomValue}
+                  watch={watch}
+                  label={item.label}
+                  icon={item.icon}
+                  key={item.label}
+                  name="duration"
+                />
+              ))}
+            </div>
+          </div>
+        );
+
+      case STEPS.PURPOSE:
+        return (
+          <div className="flex flex-col gap-2">
+            <Heading
+              title="Who is your place for?"
+              subtitle="Choose the main target audience"
+            />
+            <div className="flex-1 grid grid-cols-2 gap-3 max-h-[60vh] lg:max-h-[260px] overflow-y-scroll scroll-smooth">
+              {purposeCategories.map((item) => (
+                <CategoryButton
+                  onClick={setCustomValue}
+                  watch={watch}
+                  label={item.label}
+                  icon={item.icon}
+                  key={item.label}
+                  name="category"
+                />
+              ))}
+            </div>
+          </div>
+        );
+
+      case STEPS.FEATURES:
+        return (
+          <div className="flex flex-col gap-2">
+            <Heading
+              title="Property Features"
+              subtitle="Select all features that apply (optional)"
+            />
+            <div className="flex-1 grid grid-cols-2 gap-2 max-h-[60vh] lg:max-h-[300px] overflow-y-scroll scroll-smooth">
+              {featureCategories.map((item) => (
+                <FeatureSelect
+                  key={item.label}
+                  label={item.label}
+                  icon={item.icon}
+                  selected={features.includes(item.label)}
+                  onClick={toggleFeature}
+                />
+              ))}
+            </div>
+          </div>
+        );
+
       case STEPS.LOCATION:
         return (
           <div className="flex flex-col gap-6">
@@ -212,12 +296,12 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
           <div className="flex flex-col gap-6">
             <Heading
               title="Now, set your price"
-              subtitle="How much do you charge per night?"
+              subtitle="How much do you charge?"
             />
             <Input
               key="price"
               id="price"
-              label="Price"
+              label="Price (DZD)"
               icon={BiDollar}
               type="number"
               disabled={isLoading}
@@ -231,41 +315,40 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
         );
 
       default:
-        return (
-          <div className="flex flex-col gap-2">
-            <Heading
-              title="Which of these best describes your place?"
-              subtitle="Pick a category"
-            />
-            <div className="flex-1 grid grid-cols-2  gap-3 max-h-[60vh] lg:max-h-[260px] overflow-y-scroll scroll-smooth">
-              {categories.map((item) => (
-                <CategoryButton
-                  onClick={setCustomValue}
-                  watch={watch}
-                  label={item.label}
-                  icon={item.icon}
-                  key={item.label}
-                />
-              ))}
-            </div>
-          </div>
-        );
+        return null;
     }
   };
 
-  const isFieldFilled = !!getValues(steps[step]);
+  // Check if current step field is filled
+  const isFieldFilled = () => {
+    const stepField = steps[step];
+    if (stepField === "features") return true; // Features are optional
+    if (stepField === "guestCount") return true; // Has default value
+    return !!getValues(stepField);
+  };
 
   return (
     <div className="w-full h-full flex flex-col">
       <Modal.WindowHeader title="Share your home!" />
       <form
-        className="flex-1  md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none "
+        className="flex-1 md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="relative p-6">{body()}</div>
         <div className="flex flex-col gap-2 px-6 pb-6 pt-3">
+          {/* Step indicator */}
+          <div className="flex justify-center gap-1 mb-2">
+            {Object.keys(steps).map((_, index) => (
+              <div
+                key={index}
+                className={`h-1 w-8 rounded-full transition ${
+                  index <= step ? "bg-rose-500" : "bg-neutral-200"
+                }`}
+              />
+            ))}
+          </div>
           <div className="flex flex-row items-center gap-4 w-full">
-            {step !== STEPS.CATEGORY ? (
+            {step !== STEPS.DURATION ? (
               <Button
                 type="button"
                 className="flex items-center gap-2 justify-center"
@@ -278,7 +361,7 @@ const RentModal = ({ onCloseModal }: { onCloseModal?: () => void }) => {
             <Button
               type="submit"
               className="flex items-center gap-2 justify-center"
-              disabled={isLoading || !isFieldFilled}
+              disabled={isLoading || !isFieldFilled()}
             >
               {isLoading ? (
                 <SpinnerMini />

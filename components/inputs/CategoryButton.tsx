@@ -8,6 +8,7 @@ import { Category } from "@/types";
 interface CategoryButtonProps extends Category {
   onClick: (fieldName: string, value: string) => void;
   watch: UseFormWatch<FieldValues>;
+  name?: string;
 }
 
 const CategoryButton: React.FC<CategoryButtonProps> = ({
@@ -15,8 +16,9 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
   label,
   onClick,
   watch,
+  name = "category",
 }) => {
-  const isSelected = watch("category") === label;
+  const isSelected = watch(name) === label;
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
 
   const handleChange = () => {
     if(isSelected) return;
-    onClick("category", label);
+    onClick(name, label);
   };
 
   return (

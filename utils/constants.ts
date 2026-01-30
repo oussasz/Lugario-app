@@ -1,96 +1,177 @@
-import { TbBeach, TbMountain, TbPool } from "react-icons/tb";
+import { IconType } from "react-icons";
 import {
-  GiBarn,
-  GiBoatFishing,
-  GiCactus,
-  GiCastle,
-  GiCaveEntrance,
-  GiForestCamp,
-  GiIsland,
-  GiWindmill,
-} from "react-icons/gi";
-import { FaSkiing } from "react-icons/fa";
-import { BsSnow } from "react-icons/bs";
-import { IoDiamond } from "react-icons/io5";
-import { MdOutlineVilla } from "react-icons/md";
+  MdNightlight,
+  MdCalendarMonth,
+  MdDateRange,
+  MdAccessTime,
+  MdBeachAccess,
+  MdBusinessCenter,
+  MdFamilyRestroom,
+  MdSchool,
+  MdFavorite,
+  MdCelebration,
+  MdWaves,
+  MdCabin,
+  MdLocalAirport,
+  MdLocationCity,
+  MdLocalParking,
+  MdWifi,
+  MdAcUnit,
+  MdSmokeFree,
+  MdSmokingRooms,
+  MdPets,
+  MdSecurity,
+  MdAccessible,
+} from "react-icons/md";
+import { FaUniversity } from "react-icons/fa";
 
-export const categories = [
+// ============================================
+// DURATION CATEGORIES (Rental Period)
+// ============================================
+export const durationCategories = [
   {
-    label: "Beach",
-    icon: TbBeach,
-    description: "This property is close to the beach!",
+    label: "By Night",
+    icon: MdNightlight,
+    description: "Short stay - rent by the night",
   },
   {
-    label: "Windmills",
-    icon: GiWindmill,
-    description: "This property has a windmills!",
+    label: "Per Week",
+    icon: MdDateRange,
+    description: "Weekly rental - 7 days minimum",
   },
   {
-    label: "Modern",
-    icon: MdOutlineVilla,
-    description: "This property is modern!",
+    label: "Per Month",
+    icon: MdCalendarMonth,
+    description: "Monthly rental - medium term stay",
+  },
+  {
+    label: "Long Term",
+    icon: MdAccessTime,
+    description: "Long duration rental (+3 months)",
+  },
+];
+
+// ============================================
+// PURPOSE CATEGORIES (Who is it for?)
+// ============================================
+export const purposeCategories = [
+  {
+    label: "Tourism",
+    icon: MdBeachAccess,
+    description: "Perfect for tourists and travelers",
+  },
+  {
+    label: "Business",
+    icon: MdBusinessCenter,
+    description: "Ideal for business travelers",
+  },
+  {
+    label: "Families",
+    icon: MdFamilyRestroom,
+    description: "Family-friendly accommodation",
+  },
+  {
+    label: "Students",
+    icon: MdSchool,
+    description: "Suitable for students",
+  },
+  {
+    label: "Couples",
+    icon: MdFavorite,
+    description: "Romantic getaway for couples",
+  },
+  {
+    label: "Events",
+    icon: MdCelebration,
+    description: "For occasions: photo shoots, engagements, birthdays...",
+  },
+];
+
+// ============================================
+// FEATURE CATEGORIES (Property Features)
+// ============================================
+export const featureCategories = [
+  {
+    label: "Near Beach",
+    icon: MdWaves,
+    description: "Close to the sea",
   },
   {
     label: "Countryside",
-    icon: TbMountain,
-    description: "This property is in the countryside!",
+    icon: MdCabin,
+    description: "Rural country house",
   },
   {
-    label: "Pools",
-    icon: TbPool,
-    description: "This is property has a beautiful pool!",
+    label: "Near Airport",
+    icon: MdLocalAirport,
+    description: "Close to the airport",
   },
   {
-    label: "Islands",
-    icon: GiIsland,
-    description: "This property is on an island!",
+    label: "Near University",
+    icon: FaUniversity,
+    description: "Close to university",
   },
   {
-    label: "Lake",
-    icon: GiBoatFishing,
-    description: "This property is near a lake!",
+    label: "Downtown",
+    icon: MdLocationCity,
+    description: "City center location",
   },
   {
-    label: "Skiing",
-    icon: FaSkiing,
-    description: "This property has skiing activies!",
+    label: "Parking",
+    icon: MdLocalParking,
+    description: "Parking available",
   },
   {
-    label: "Castles",
-    icon: GiCastle,
-    description: "This property is an ancient castle!",
+    label: "Fast WiFi",
+    icon: MdWifi,
+    description: "Strong WiFi connection",
   },
   {
-    label: "Caves",
-    icon: GiCaveEntrance,
-    description: "This property is in a spooky cave!",
+    label: "Air Conditioning",
+    icon: MdAcUnit,
+    description: "Air conditioning available",
   },
   {
-    label: "Camping",
-    icon: GiForestCamp,
-    description: "This property offers camping activities!",
+    label: "Smoking Allowed",
+    icon: MdSmokingRooms,
+    description: "Smoking is permitted",
   },
   {
-    label: "Arctic",
-    icon: BsSnow,
-    description: "This property is in arctic environment!",
+    label: "No Smoking",
+    icon: MdSmokeFree,
+    description: "Smoke-free property",
   },
   {
-    label: "Desert",
-    icon: GiCactus,
-    description: "This property is in the desert!",
+    label: "Pets Allowed",
+    icon: MdPets,
+    description: "Pet-friendly property",
   },
   {
-    label: "Barns",
-    icon: GiBarn,
-    description: "This property is in a barn!",
+    label: "Security",
+    icon: MdSecurity,
+    description: "Security cameras / guarded",
   },
   {
-    label: "Lux",
-    icon: IoDiamond,
-    description: "This property is brand new and luxurious!",
+    label: "Accessible",
+    icon: MdAccessible,
+    description: "Suitable for people with disabilities",
   },
 ];
+
+// ============================================
+// COMBINED CATEGORIES (for backward compatibility)
+// These are shown in the main category bar
+// ============================================
+export const categories = purposeCategories;
+
+// ============================================
+// TYPE DEFINITIONS
+// ============================================
+export interface CategoryItem {
+  label: string;
+  icon: IconType;
+  description: string;
+}
 
 export const LISTINGS_BATCH = 16;
 

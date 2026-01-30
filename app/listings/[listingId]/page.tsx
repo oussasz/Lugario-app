@@ -7,7 +7,7 @@ import ListingClient from "./_components/ListingClient";
 
 import { getCurrentUser } from "@/services/user";
 import { getListingById } from "@/services/listing";
-import { categories } from "@/utils/constants";
+import { purposeCategories } from "@/utils/constants";
 
 interface IParams {
   listingId: string;
@@ -34,9 +34,11 @@ const ListingPage = async ({ params: { listingId } }: { params: IParams }) => {
     latitude,
     longitude,
     reservations,
+    duration,
+    features,
   } = listing;
 
-  const category = categories.find((cate) => cate.label === listing.category);
+  const category = purposeCategories.find((cate) => cate.label === listing.category);
 
   return (
     <section className="main-container">
@@ -60,6 +62,8 @@ const ListingPage = async ({ params: { listingId } }: { params: IParams }) => {
         <ListingInfo
           user={owner}
           category={category}
+          duration={duration}
+          features={features}
           description={description}
           roomCount={roomCount}
           guestCount={guestCount}

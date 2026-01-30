@@ -4,6 +4,10 @@ import dynamic from "next/dynamic";
 import Avatar from "@/components/Avatar";
 import ListingCategory from "./ListingCategory";
 import { Category } from "@/types";
+import {
+  durationCategories,
+  featureCategories,
+} from "@/utils/constants";
 
 interface ListingInfoProps {
   user: {
@@ -15,6 +19,8 @@ interface ListingInfoProps {
   roomCount: number;
   bathroomCount: number;
   category: Category | undefined;
+  duration?: string | null;
+  features?: string | null;
   latitude: number | null;
   longitude: number | null;
 }
@@ -30,9 +36,22 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   roomCount,
   bathroomCount,
   category,
+  duration,
+  features,
   latitude,
   longitude,
 }) => {
+  // Parse features string to array
+  const featuresList = features ? features.split(",").filter(Boolean) : [];
+  const featureItems = featuresList
+    .map((f) => featureCategories.find((fc) => fc.label === f))
+    .filter(Boolean);
+
+  // Get duration info
+  const durationInfo = duration
+    ? durationCategories.find((d) => d.label === duration)
+    : null;
+
   return (
     <div className="col-span-4 flex flex-col gap-8">
       <div className="flex flex-col gap-2">
@@ -50,15 +69,59 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
         </div>
       </div>
       <hr />
-      {category && (
-        <ListingCategory
-          icon={category.icon}
-          label={category?.label}
-          description={category?.description || ""}
-        />
+
+      {/* Duration */}
+      {durationInfo && (
+        <>
+          <ListingCategory
+            icon={durationInfo.icon}
+            label={durationInfo.label}
+            description={durationInfo.description}
+          />
+          <hr />
+        </>
       )}
-      <hr />
-      <p className=" font-light text-neutral-500 text-[16px] ">{description}</p>
+
+      {/* Purpose/Category */}
+      {category && (
+        <>
+          <ListingCategory
+            icon={category.icon}
+            label={category.label}
+            description={category.description || ""}
+          />
+          <hr />
+        </>
+      )}
+
+      {/* Features */}
+      {featureItems.length > 0 && (
+        <>
+          <div className="flex flex-col gap-3">
+            <span className="text-lg font-semibold">Property Features</span>
+            <div className="flex flex-wrap gap-2">
+              {featureItems.map((feature) => {
+                if (!feature) return null;
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={feature.label}
+                    className="flex items-center gap-2 bg-neutral-100 px-3 py-2 rounded-full"
+                  >
+                    <Icon size={18} className="text-neutral-600" />
+                    <span className="text-sm text-neutral-700">
+                      {feature.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <hr />
+        </>
+      )}
+
+      <p className="font-light text-neutral-500 text-[16px]">{description}</p>
       <hr />
       <div className="h-[210px]">
         <Map

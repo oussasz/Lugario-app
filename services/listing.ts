@@ -127,6 +127,8 @@ export const getListingById = async (id: string) => {
 export const createListing = async (data: { [x: string]: any }) => {
   const {
     category,
+    duration,
+    features,
     location: { region, label: country, latlng },
     guestCount,
     bathroomCount,
@@ -137,11 +139,13 @@ export const createListing = async (data: { [x: string]: any }) => {
     description,
   } = data;
 
-  Object.keys(data).forEach((value: any) => {
-    if (!data[value]) {
-      throw new Error("Invalid data");
+  // Validate required fields
+  const requiredFields = ['category', 'duration', 'location', 'guestCount', 'roomCount', 'bathroomCount', 'image', 'price', 'title', 'description'];
+  for (const field of requiredFields) {
+    if (!data[field]) {
+      throw new Error(`Missing required field: ${field}`);
     }
-  });
+  }
 
   const user = await getCurrentUser();
   if (!user) throw new Error("Unauthorized!");
@@ -152,6 +156,8 @@ export const createListing = async (data: { [x: string]: any }) => {
       description,
       imageSrc,
       category,
+      duration,
+      features: Array.isArray(features) ? features.join(',') : (features || ''),
       roomCount,
       bathroomCount,
       guestCount,
