@@ -182,7 +182,9 @@ const RentModal = ({
         router.refresh();
         if (mode === "edit") router.push(`/listings/${listingId}`);
       } catch (error: any) {
-        toast.error(mode === "edit" ? tRent("updateFailed") : tRent("createFailed"));
+        toast.error(
+          mode === "edit" ? tRent("updateFailed") : tRent("createFailed"),
+        );
         console.log(error?.message);
       }
     });
@@ -445,7 +447,11 @@ const RentModal = ({
               {isLoading ? (
                 <SpinnerMini />
               ) : step === STEPS.PRICE ? (
-                mode === "edit" ? tCommon("update") : tCommon("create")
+                mode === "edit" ? (
+                  tCommon("update")
+                ) : (
+                  tCommon("create")
+                )
               ) : (
                 tCommon("next")
               )}

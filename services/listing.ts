@@ -240,8 +240,12 @@ export const getOwnedListingById = async (id: string) => {
   return listing;
 };
 
-export const updateListing = async (listingId: string, data: { [x: string]: any }) => {
-  if (!listingId || typeof listingId !== "string") throw new Error("Invalid ID");
+export const updateListing = async (
+  listingId: string,
+  data: { [x: string]: any },
+) => {
+  if (!listingId || typeof listingId !== "string")
+    throw new Error("Invalid ID");
 
   const user = await getCurrentUser();
   if (!user) throw new Error("Unauthorized!");
