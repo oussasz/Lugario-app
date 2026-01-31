@@ -31,9 +31,6 @@ const Footer = ({
                   className="object-contain p-1"
                 />
               </div>
-              <div className="text-base font-bold text-neutral-900">
-                Lugario
-              </div>
             </div>
             <p className="mt-3 max-w-md text-sm text-neutral-600">{tagline}</p>
           </div>

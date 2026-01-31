@@ -12,7 +12,7 @@ const Navbar: React.FC<NavbarProps> = async () => {
   return (
     <header
       id="site-header"
-      className="fixed top-0 left-0 w-full bg-white z-10"
+      className="fixed top-0 left-0 w-full bg-white z-40"
     >
       <HeaderHeight />
       <nav className="py-3 border-b-[1px]">

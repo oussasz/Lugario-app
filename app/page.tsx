@@ -1,7 +1,6 @@
 import React, { FC, Suspense } from "react";
 
 import ListingCard from "@/components/ListingCard";
-import LoadMore from "@/components/LoadMore";
 import EmptyState from "@/components/EmptyState";
 import Search from "@/components/navbar/Search";
 import Categories from "@/components/navbar/Categories";
@@ -27,8 +26,9 @@ const Home: FC<HomeProps> = async ({ searchParams }) => {
 
   const t = await getTranslations("Pages.home");
 
-  const { listings, nextCursor } = await getListings(searchParams);
+  const { listings } = await getListings(searchParams);
   const favorites = await getFavorites();
+  const previewListings = listings?.slice(0, 12) ?? [];
 
   return (
     <>
@@ -58,7 +58,7 @@ const Home: FC<HomeProps> = async ({ searchParams }) => {
         </div>
 
         <div className="main-container">
-          {!listings || listings.length === 0 ? (
+          {previewListings.length === 0 ? (
             <div className="pt-6 pb-10">
               <EmptyState
                 title={t("noListingsTitle")}
@@ -67,7 +67,7 @@ const Home: FC<HomeProps> = async ({ searchParams }) => {
             </div>
           ) : (
             <div className="pt-6 pb-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8">
-              {listings.map((listing) => {
+              {previewListings.map((listing) => {
                 const hasFavorited = favorites.includes(listing.id);
                 return (
                   <ListingCard
@@ -77,17 +77,6 @@ const Home: FC<HomeProps> = async ({ searchParams }) => {
                   />
                 );
               })}
-              {nextCursor ? (
-                <Suspense fallback={<></>}>
-                  <LoadMore
-                    nextCursor={nextCursor}
-                    fnArgs={searchParams}
-                    queryFn={getListings}
-                    queryKey={["listings", searchParams]}
-                    favorites={favorites}
-                  />
-                </Suspense>
-              ) : null}
             </div>
           )}
         </div>

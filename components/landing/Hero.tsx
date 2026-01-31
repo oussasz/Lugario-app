@@ -28,7 +28,7 @@ const Hero = ({ title, subtitle, children }: HeroProps) => {
   }, [heroImages.length]);
 
   return (
-    <section className="relative z-10 w-full overflow-visible bg-white">
+    <section className="relative z-0 w-full overflow-visible bg-white">
       <div className="absolute inset-0 -z-10">
         {heroImages.map((src, idx) => (
           <Image
